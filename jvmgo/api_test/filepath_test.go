@@ -34,3 +34,6 @@ func TestSplit(t *testing.T) {
 	}
 
 }
+
+func TestString(t *testing.T) {
+}
