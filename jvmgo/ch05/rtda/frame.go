@@ -4,11 +4,14 @@ package rtda
 type Frame struct {
 	operandStack *OperandStack
 	localVars    LocalVars
+	thread       *Thread
 	lower        *Frame
+	nextPC       int
 }
 
-func newFrame(maxLocals, maxStack uint) *Frame {
+func newFrame(thread *Thread, maxLocals, maxStack uint16) *Frame {
 	return &Frame{
+		thread:       thread,
 		operandStack: newOperandStack(maxStack),
 		localVars:    newLocalVars(maxLocals),
 	}
@@ -20,4 +23,16 @@ func (self *Frame) Localvars() LocalVars {
 
 func (self *Frame) OperandStack() *OperandStack {
 	return self.operandStack
+}
+
+func (self *Frame) SetNextPC(pc int) {
+	self.nextPC = pc
+}
+
+func (self *Frame) NextPC() int {
+	return self.nextPC
+}
+
+func (self *Frame) Thread() *Thread {
+	return self.thread
 }

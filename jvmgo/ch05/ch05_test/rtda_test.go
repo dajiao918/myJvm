@@ -3,6 +3,7 @@ package ch04_test
 import (
 	"fmt"
 	"jvmgo/ch04/rtda"
+	"jvmgo/ch05/instructions/base"
 	"testing"
 )
 
@@ -36,4 +37,25 @@ func TestOperandStack(t *testing.T) {
 	fmt.Println(operand.PopLong())
 	fmt.Println(operand.PopFloat())
 	fmt.Println(operand.PopInt())
+}
+
+func TestShift(t *testing.T) {
+	frame := rtda.NewFrame(100, 100)
+	operand := frame.OperandStack()
+	operand.PushInt(-4)
+	operand.PushInt(1)
+	is := &IUSHR{}
+	is.Execute(frame)
+	t.Log(frame.OperandStack().PopInt())
+}
+
+type IUSHR struct{ base.NoOperandsInstruction }
+
+func (self *IUSHR) Execute(frame *rtda.Frame) {
+	stack := frame.OperandStack()
+	v2 := stack.PopInt()
+	v1 := stack.PopInt()
+	s := uint32(v2) & 0x1f
+	result := int32(v1 >> s)
+	stack.PushInt(result)
 }

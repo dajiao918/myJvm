@@ -36,12 +36,13 @@ func (self *DUP_x1) Execute(frame *rtda.Frame) {
 }
 
 // Execute /*
-//  1-2-3-4
+// top->bottom
+//    2-3-4
 //        |
 //       /
 //      /
 //     V
-//   1-4-3-2-4      */
+//     4-3-2-4      */
 func (self *DUP_x2) Execute(frame *rtda.Frame) {
 	stack := frame.OperandStack()
 	slot1 := stack.PopSlot()

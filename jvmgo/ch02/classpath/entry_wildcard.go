@@ -13,7 +13,7 @@ func newWildCardEntry(path string) CompositeEntry {
 		if err != nil {
 			return err
 		}
-		if info.IsDir() && path != baseDir {
+		if info.IsDir() && path != baseDir { //只遍历当前目录下的jar
 			return filepath.SkipDir
 		}
 		if strings.HasSuffix(path, ".jar") || strings.HasSuffix(path, ".JAR") {

@@ -18,7 +18,7 @@ func (self *Stack) push(frame *Frame) {
 		panic("java.lang.StackOverflowError")
 	}
 	if self._top != nil {
-		self._top.lower = frame
+		frame.lower = self._top
 	}
 	self._top = frame
 	self.size++
@@ -27,7 +27,7 @@ func (self *Stack) push(frame *Frame) {
 func (self *Stack) pop() *Frame {
 	if self._top != nil {
 		frame := self._top
-		self._top = self._top.lower
+		self._top = frame.lower
 		frame.lower = nil
 		self.size--
 		return frame

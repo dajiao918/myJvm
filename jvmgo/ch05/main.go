@@ -24,6 +24,34 @@ func startJvm(cmd *Cmd) {
 	className := strings.Replace(cmd.class, ".", "/", -1)
 	cf := loadClass(className, cp)
 	printClassInfo(cf)
+	mainMethod := getMainMethod(cf)
+	if mainMethod != nil {
+		interpret(mainMethod)
+	} else {
+		fmt.Printf("Main method is nil, occur error!!!")
+	}
+}
+
+func getMainMethod(cf *classFile.ClassFile) *classFile.MemberInfo {
+	for _, mem := range cf.Methods() {
+		fmt.Printf("name=%v, descriptor=%v\n", mem.Name(), mem.Descriptor())
+		if mem.Name() == "main" && mem.Descriptor() == "([Ljava/lang/String;)V" {
+			return mem
+		}
+	}
+	return nil
+}
+
+func loadClass(name string, cp *classpath.Classpath) *classFile.ClassFile {
+	classData, _, err := cp.ReadClass(name)
+	if err != nil {
+		panic(err)
+	}
+	classFile, err := classFile.Parse(classData)
+	if err != nil {
+		panic(err)
+	}
+	return classFile
 }
 
 func printClassInfo(cf *classFile.ClassFile) {
@@ -41,16 +69,4 @@ func printClassInfo(cf *classFile.ClassFile) {
 	for i, v := range cf.Methods() {
 		fmt.Printf("method%d name is %v\n", i, v.Name())
 	}
-}
-
-func loadClass(name string, cp *classpath.Classpath) *classFile.ClassFile {
-	classData, _, err := cp.ReadClass(name)
-	if err != nil {
-		panic(err)
-	}
-	classFile, err := classFile.Parse(classData)
-	if err != nil {
-		panic(err)
-	}
-	return classFile
 }

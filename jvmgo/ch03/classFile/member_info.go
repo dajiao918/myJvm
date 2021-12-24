@@ -34,3 +34,13 @@ func (mem *MemberInfo) Name() string {
 func (mem *MemberInfo) Descriptor() string {
 	return mem.constantPool.getUtf8(mem.descriptorIndex)
 }
+
+func (mem *MemberInfo) CodeAttribute() *CodeAttribute {
+	for _, attr := range mem.attributes {
+		switch attr.(type) {
+		case *CodeAttribute:
+			return attr.(*CodeAttribute)
+		}
+	}
+	return nil
+}

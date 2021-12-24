@@ -2,8 +2,12 @@ package base
 
 import "jvmgo/ch05/rtda"
 
+// Instruction
+// 指令接口
 type Instruction interface {
+	// FetchOperands 获取操作数
 	FetchOperands(reader *BytecodeReader)
+	// Execute 执行指令
 	Execute(frame *rtda.Frame)
 }
 
@@ -15,12 +19,12 @@ func (self *NoOperandsInstruction) FetchOperands(reader *BytecodeReader) {}
 
 // BranchInstruction /*跳转指令*/
 type BranchInstruction struct {
-	offset int
+	Offset int
 }
 
 // FetchOperands /*读取16字节的pc偏移*/
 func (self *BranchInstruction) FetchOperands(reader *BytecodeReader) {
-	self.offset = int(reader.ReadInt16())
+	self.Offset = int(reader.ReadInt16())
 }
 
 // Index8Instruction /*加载类指令和存储类指令需要局部变量表的int8索引*/
@@ -38,4 +42,10 @@ type Index16Instruction struct {
 
 func (self *Index16Instruction) FetchOperands(reader *BytecodeReader) {
 	self.Index = uint(reader.ReadUint16())
+}
+
+func Branch(frame *rtda.Frame, offset int) {
+	pc := frame.Thread().PC()
+	pc += offset
+	frame.SetNextPC(pc)
 }
